@@ -25,7 +25,7 @@ function Login() {
     try {
       console.log("📨 Sending login request:", formData);
 
-      const res = await api.post("/login", formData);
+      const res = await api.post("/api/login", formData);
 
       console.log("✅ Login Response:", res.data);
 
