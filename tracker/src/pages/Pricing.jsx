@@ -3,8 +3,7 @@ import { useAuth } from "../context/Authcontext";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe(
-  "pk_test_51SYL0BBdzuY7Xu2UDh6062TbbMAZfsjsobTlCJIP3X6M0owdbwJ6kxMIa8aOcdO9YOZSynu9LLAuRE0YeTX28kzw001TcodPha"
-);
+import.meta.env.VITE_STRIPE_PUBLIC_KEY)
 
 function Pricing() {
   const { user, token } = useAuth();
