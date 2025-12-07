@@ -7,11 +7,7 @@ function Login() {
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -25,7 +21,11 @@ function Login() {
     try {
       console.log("📨 Sending login request:", formData);
 
-      const res = await api.post("/api/login", formData);
+      const res = await api.post("/login", formData);
+
+      if (!res.data || !res.data.user || !res.data.token) {
+        throw new Error("Invalid server response");
+      }
 
       console.log("✅ Login Response:", res.data);
 
@@ -36,7 +36,7 @@ function Login() {
 
       const role = res.data.user.role;
 
-      // If user is premium → redirect to premium dashboard
+      // Premium redirect
       if (res.data.user.premium) {
         navigate("/premiumdashboard");
         return;
@@ -49,8 +49,7 @@ function Login() {
 
     } catch (err) {
       console.error("❌ Login Error:", err?.response?.data || err);
-
-      alert(err?.response?.data?.message || "Login failed. Try again.");
+      alert(err?.response?.data?.message || err.message || "Login failed");
     } finally {
       setLoading(false);
     }
