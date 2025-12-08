@@ -1,6 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import HeroImage from "../assets/hmepage.jpg";
+import { Link } from "react-router-dom";
 
 function HomePage() {
   return (
@@ -36,18 +37,16 @@ function HomePage() {
           </p>
 
           <div className="flex gap-4 mt-4">
-            <a
-              href="/register"
+            <Link to="/register"
               className="bg-white text-emerald-700 px-7 py-3 rounded-xl font-semibold hover:bg-lime-100 transition shadow-lg"
             >
               Get Started
-            </a>
-            <a
-              href="/login"
+            </Link>
+            <Link to ="/login"
               className="border border-white text-white px-7 py-3 rounded-xl font-semibold hover:bg-white/20 transition shadow-lg"
             >
               Login
-            </a>
+            </Link>
           </div>
         </motion.div>
       </section>
