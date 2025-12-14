@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import api from "../components/api";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 
 export default function Productivity() {
@@ -8,48 +7,32 @@ export default function Productivity() {
     title: "",
     targetHours: "",
   });
-  const [loading, setLoading] = useState(true);
 
-  const fetchGoals = async () => {
-    try {
-      setLoading(true);
-      const res = await api.get("/goals");
-      setGoals(res.data.goals || []);
-    } catch (err) {
-      console.error("Failed to load goals:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchGoals();
-  }, []);
-
-  const addGoal = async (e) => {
+  const addGoal = (e) => {
     e.preventDefault();
-    try {
-      await api.post("/goals", form);
-      setForm({ title: "", targetHours: "" });
-      fetchGoals();
-    } catch (err) {
-      console.error("Failed to add goal:", err);
-    }
+    const newGoal = {
+      _id: Date.now(), // temporary unique ID
+      title: form.title,
+      targetHours: Number(form.targetHours),
+      progress: 0,
+    };
+    setGoals([newGoal, ...goals]);
+    setForm({ title: "", targetHours: "" });
   };
 
-  const updateProgress = async (goalId, newValue) => {
-    try {
-      await api.put(`/goals/${goalId}`, { progress: newValue });
-      fetchGoals();
-    } catch (err) {
-      console.error("Failed to update progress:", err);
-    }
+  const updateProgress = (goalId, newValue) => {
+    setGoals((prev) =>
+      prev.map((goal) =>
+        goal._id === goalId
+          ? { ...goal, progress: Math.min(newValue, goal.targetHours) }
+          : goal
+      )
+    );
   };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-5xl mx-auto">
-        
         <h1 className="text-2xl font-bold mb-6">Productivity Goals</h1>
 
         {/* Add Goal Form */}
@@ -86,8 +69,8 @@ export default function Productivity() {
         {/* Goal List */}
         <h2 className="text-xl font-semibold mb-4">My Goals</h2>
 
-        {loading ? (
-          <div className="text-center py-5">Loading goals...</div>
+        {goals.length === 0 ? (
+          <div className="text-center py-5 text-gray-600">No goals yet.</div>
         ) : (
           <div className="space-y-5">
             {goals.map((goal) => {
@@ -132,9 +115,7 @@ export default function Productivity() {
                       min="0"
                       max={goal.targetHours}
                     />
-                    <span className="text-gray-500 text-sm">
-                      Update Hours Completed
-                    </span>
+                    <span className="text-gray-500 text-sm">Update Hours Completed</span>
                   </div>
                 </motion.div>
               );

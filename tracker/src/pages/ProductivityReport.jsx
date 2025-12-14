@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -9,26 +9,48 @@ import {
   Bar,
   ResponsiveContainer,
 } from "recharts";
+import api from "../components/api"; // your axios instance
 
 function ProductivityReport() {
   const [view, setView] = useState("weekly");
+  const [weeklyData, setWeeklyData] = useState([]);
+  const [monthlyData, setMonthlyData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const weeklyData = [
-    { day: "Mon", hours: 5 },
-    { day: "Tue", hours: 6 },
-    { day: "Wed", hours: 4 },
-    { day: "Thu", hours: 7 },
-    { day: "Fri", hours: 3 },
-    { day: "Sat", hours: 0 },
-    { day: "Sun", hours: 0 },
-  ];
+  const token = localStorage.getItem("token");
 
-  const monthlyData = [
-    { week: "Week 1", hours: 18 },
-    { week: "Week 2", hours: 22 },
-    { week: "Week 3", hours: 16 },
-    { week: "Week 4", hours: 25 },
-  ];
+  // Fetch data from backend
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [weeklyRes, monthlyRes] = await Promise.all([
+        api.get("/productivitys/weekly", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        api.get("/productivitys/monthly", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      // Ensure both are arrays
+      setWeeklyData(Array.isArray(weeklyRes.data) ? weeklyRes.data : []);
+      setMonthlyData(Array.isArray(monthlyRes.data) ? monthlyRes.data : []);
+    } catch (err) {
+      console.error("Failed to fetch productivity data:", err);
+      setWeeklyData([]);
+      setMonthlyData([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <p className="p-6 text-center">Loading productivity data...</p>;
+  }
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen font-sans">
@@ -62,12 +84,11 @@ function ProductivityReport() {
       </div>
 
       {/* Weekly Chart */}
-      {view === "weekly" && (
+      {view === "weekly" && weeklyData.length > 0 && (
         <div className="bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-xl font-semibold mb-3">
             Weekly Productivity (Hours)
           </h3>
-
           <ResponsiveContainer width="100%" height={300}>
             <LineChart data={weeklyData}>
               <XAxis dataKey="day" />
@@ -80,12 +101,11 @@ function ProductivityReport() {
       )}
 
       {/* Monthly Chart */}
-      {view === "monthly" && (
+      {view === "monthly" && monthlyData.length > 0 && (
         <div className="bg-white p-6 rounded-xl shadow-md">
           <h3 className="text-xl font-semibold mb-3">
             Monthly Productivity (Hours)
           </h3>
-
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={monthlyData}>
               <XAxis dataKey="week" />
@@ -96,6 +116,12 @@ function ProductivityReport() {
           </ResponsiveContainer>
         </div>
       )}
+
+      {/* No Data Fallback */}
+      {(view === "weekly" && weeklyData.length === 0) ||
+      (view === "monthly" && monthlyData.length === 0) ? (
+        <p className="text-center text-gray-500 mt-6">No data available</p>
+      ) : null}
     </div>
   );
 }

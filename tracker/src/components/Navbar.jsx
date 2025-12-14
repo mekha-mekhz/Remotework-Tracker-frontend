@@ -8,14 +8,7 @@ import "@fontsource/montserrat";
   const { user, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
 
-  // Theme toggle
-  const [theme, setTheme] = useState(() => localStorage.getItem("theme") || "dark");
-  useEffect(() => {
-    if (theme === "dark") document.documentElement.classList.add("dark");
-    else document.documentElement.classList.remove("dark");
-    localStorage.setItem("theme", theme);
-  }, [theme]);
-  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
+  
 
   const handleLogout = () => {
     logout();
@@ -62,9 +55,7 @@ import "@fontsource/montserrat";
             </Link>
           )}
 
-          <button onClick={toggleTheme} className="ml-4 px-3 py-1 bg-gray-800 rounded-md hover:bg-gray-700 transition">
-            {theme === "dark" ? "☀️ Light Mode" : "🌙 Dark Mode"}
-          </button>
+          
         </ul>
 
         {/* Mobile Menu Button */}

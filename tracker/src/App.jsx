@@ -31,6 +31,14 @@ import AdminRolePermissions from "./pages/AdminPermission";
 import AdminDisputes from "./pages/AdminDispute";
 import CreateDispute from "./pages/CreateDispute";
 import Approval from "./pages/Approval";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+import ProjectsPage from "./pages/ProjectsPage";
+import TeamsPage from "./pages/TeamsPage";
+import Chat from "./pages/chat";
+import ManagerChat from "./pages/Mangerchat";
+import EditProfile from "./pages/EditProfile";
+
 
 
 function App() {
@@ -140,17 +148,21 @@ function App() {
                     <Route path="manager/tasks" element={<ManagerTaskList/>}/>
                    <Route path="manager/add-task" element={<ManagerAddTask/>}/>
                    <Route path="manager/leaves" element={<ManagerLeaves/>}/>
+                   <Route path="/manager/teams" element={<TeamsPage/>}/>
+                   <Route path="manager/projects" element={<ProjectsPage/>}/>
                                <Route path="manager/records" element={<ManagerRecords/>}/>
-        
+                    <Route path="manager/chat" element={<ManagerChat/>}/>
+       
 <Route path="admin/reports" element={<AdminReports/>}/>
 <Route path="admin/approval" element={<Approval/>}/>
+<Route path="edit-profile" element={<EditProfile/>}/>
 
 <Route path="admin/roles" element={<AdminRolePermissions/>}/>
 <Route path="admin/disputes" element={<AdminDisputes/>}/>
 <Route path="disputes/create" element={<CreateDispute/>}/>
-
-
-
+<Route path="/forgot-password" element={<ForgotPassword />} />
+<Route path="/reset-password" element={<ResetPassword />} />
+<Route path="/chat" element={<Chat/>} />
 
 
 
