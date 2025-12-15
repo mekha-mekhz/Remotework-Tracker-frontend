@@ -23,7 +23,6 @@ function AdminReports() {
     resolvedDisputes: 0,
   });
   const [loading, setLoading] = useState(true);
-
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -31,20 +30,15 @@ function AdminReports() {
       try {
         setLoading(true);
 
-        // Fetch users
         const usersRes = await api.get("/admin/users", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const totalUsers = usersRes.data.length;
 
-        // Fetch tasks
-        const tasksRes = await api.get("/tasks", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const tasksRes = await api.get("/tasks", { headers: { Authorization: `Bearer ${token}` } });
         const activeTasks = tasksRes.data.tasks.filter(t => t.status !== "done").length;
         const completedTasks = tasksRes.data.tasks.filter(t => t.status === "done").length;
 
-        // Fetch disputes
         const disputesRes = await api.get("/admin/disputes/stats", {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -68,9 +62,9 @@ function AdminReports() {
     fetchReports();
   }, [token]);
 
-  if (loading) return <p className="p-6">Loading reports...</p>;
+  if (loading)
+    return <p className="text-lime-300 p-6 text-center">Loading reports...</p>;
 
-  // Chart data
   const taskData = [
     { name: "Active Tasks", count: stats.activeTasks },
     { name: "Completed Tasks", count: stats.completedTasks },
@@ -81,54 +75,49 @@ function AdminReports() {
     { name: "Resolved Disputes", value: stats.resolvedDisputes },
   ];
 
-  const COLORS = ["#FF8042", "#00C49F"];
+  const COLORS = ["#A3E635", "#14B8A6"]; // Lime + Teal
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <h1 className="text-3xl font-bold mb-6">Admin Reports</h1>
+    <div className="p-6 min-h-screen bg-gradient-to-br from-teal-900 via-teal-800 to-lime-900 text-white">
+      <h1 className="text-3xl font-bold mb-6 text-lime-300">Admin Reports</h1>
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-8">
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-          <p className="text-gray-500">Total Users</p>
-          <p className="text-2xl font-bold">{stats.totalUsers}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-          <p className="text-gray-500">Active Tasks</p>
-          <p className="text-2xl font-bold">{stats.activeTasks}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-          <p className="text-gray-500">Completed Tasks</p>
-          <p className="text-2xl font-bold">{stats.completedTasks}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-          <p className="text-gray-500">Pending Disputes</p>
-          <p className="text-2xl font-bold">{stats.pendingDisputes}</p>
-        </div>
-        <div className="bg-white p-6 rounded-xl shadow hover:shadow-lg transition">
-          <p className="text-gray-500">Resolved Disputes</p>
-          <p className="text-2xl font-bold">{stats.resolvedDisputes}</p>
-        </div>
+        {[
+          { label: "Total Users", value: stats.totalUsers },
+          { label: "Active Tasks", value: stats.activeTasks },
+          { label: "Completed Tasks", value: stats.completedTasks },
+          { label: "Pending Disputes", value: stats.pendingDisputes },
+          { label: "Resolved Disputes", value: stats.resolvedDisputes },
+        ].map((card, idx) => (
+          <div
+            key={idx}
+            className="bg-teal-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition"
+          >
+            <p className="text-lime-200">{card.label}</p>
+            <p className="text-2xl font-bold">{card.value}</p>
+          </div>
+        ))}
       </div>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
         {/* Tasks Bar Chart */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-xl font-bold mb-4">Tasks Overview</h2>
+        <div className="bg-teal-800 p-6 rounded-xl shadow-lg">
+          <h2 className="text-xl font-bold mb-4 text-lime-200">Tasks Overview</h2>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={taskData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
-              <XAxis dataKey="name" />
-              <YAxis />
+              <XAxis dataKey="name" stroke="#A3E635" />
+              <YAxis stroke="#A3E635" />
               <Tooltip />
-              <Bar dataKey="count" fill="#4F46E5" />
+              <Bar dataKey="count" fill="#14B8A6" />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Disputes Pie Chart */}
-        <div className="bg-white p-6 rounded-xl shadow">
-          <h2 className="text-xl font-bold mb-4">Disputes Overview</h2>
+        <div className="bg-teal-800 p-6 rounded-xl shadow-lg">
+          <h2 className="text-xl font-bold mb-4 text-lime-200">Disputes Overview</h2>
           <ResponsiveContainer width="100%" height={250}>
             <PieChart>
               <Pie
@@ -138,7 +127,7 @@ function AdminReports() {
                 cx="50%"
                 cy="50%"
                 outerRadius={80}
-                fill="#8884d8"
+                fill="#14B8A6"
                 label
               >
                 {disputeData.map((entry, index) => (
@@ -153,36 +142,28 @@ function AdminReports() {
       </div>
 
       {/* Reports Table */}
-      <div className="bg-white p-6 rounded-xl shadow">
-        <h2 className="text-xl font-bold mb-4">Detailed Reports</h2>
-        <table className="min-w-full border-collapse border border-gray-200">
+      <div className="bg-teal-800 p-6 rounded-xl shadow-lg">
+        <h2 className="text-xl font-bold mb-4 text-lime-200">Detailed Reports</h2>
+        <table className="min-w-full border-collapse border border-lime-400">
           <thead>
-            <tr className="bg-gray-100">
+            <tr className="bg-teal-700 text-lime-200">
               <th className="border p-2 text-left">Report Type</th>
               <th className="border p-2 text-left">Count</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="border p-2">Total Users</td>
-              <td className="border p-2">{stats.totalUsers}</td>
-            </tr>
-            <tr>
-              <td className="border p-2">Active Tasks</td>
-              <td className="border p-2">{stats.activeTasks}</td>
-            </tr>
-            <tr>
-              <td className="border p-2">Completed Tasks</td>
-              <td className="border p-2">{stats.completedTasks}</td>
-            </tr>
-            <tr>
-              <td className="border p-2">Pending Disputes</td>
-              <td className="border p-2">{stats.pendingDisputes}</td>
-            </tr>
-            <tr>
-              <td className="border p-2">Resolved Disputes</td>
-              <td className="border p-2">{stats.resolvedDisputes}</td>
-            </tr>
+            {[
+              { type: "Total Users", count: stats.totalUsers },
+              { type: "Active Tasks", count: stats.activeTasks },
+              { type: "Completed Tasks", count: stats.completedTasks },
+              { type: "Pending Disputes", count: stats.pendingDisputes },
+              { type: "Resolved Disputes", count: stats.resolvedDisputes },
+            ].map((row, idx) => (
+              <tr key={idx} className="odd:bg-teal-800 even:bg-teal-900">
+                <td className="border p-2">{row.type}</td>
+                <td className="border p-2">{row.count}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

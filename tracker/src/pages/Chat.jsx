@@ -11,7 +11,6 @@ function Chat() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
 
-  // Fetch all managers for dropdown
   const fetchManagers = async () => {
     try {
       const res = await api.get("/managers", {
@@ -23,7 +22,6 @@ function Chat() {
     }
   };
 
-  // Fetch conversation with selected manager
   const fetchConversation = async (managerId) => {
     try {
       const res = await api.get(`/messages/conversation/${managerId}`, {
@@ -35,7 +33,6 @@ function Chat() {
     }
   };
 
-  // Send a message
   const sendMessage = async () => {
     if (!newMessage || !selectedManager) return;
     try {
@@ -56,12 +53,12 @@ function Chat() {
   }, []);
 
   return (
-    <div className="p-6 min-h-screen flex gap-6">
+    <div className="min-h-screen bg-slate-950 p-6 flex gap-6">
       {/* Left panel: manager selection */}
-      <div className="w-1/4 border rounded p-2">
-        <h2 className="font-bold mb-2">Managers</h2>
+      <div className="w-1/4 bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col">
+        <h2 className="font-bold text-teal-400 mb-3 text-lg">Managers</h2>
         <select
-          className="w-full border rounded p-2"
+          className="w-full p-2 rounded bg-slate-800 text-slate-200 border border-slate-700 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400"
           value={selectedManager?._id || ""}
           onChange={(e) => {
             const manager = managers.find((m) => m._id === e.target.value);
@@ -77,15 +74,16 @@ function Chat() {
           ))}
         </select>
 
-        {/* Optional: recent chats with managers */}
-        <div className="mt-4 space-y-2">
+        {/* Recent chats preview */}
+        <div className="mt-4 flex-1 overflow-y-auto space-y-2">
           {messages.slice(-5).map((msg) => (
             <div
               key={msg._id}
-              className={`p-2 rounded ${msg.sender._id === selectedManager?._id
-                ? "bg-gray-200 text-left"
-                : "bg-blue-500 text-white text-right"
-                }`}
+              className={`p-2 rounded-lg max-w-full break-words ${
+                msg.sender._id === selectedManager?._id
+                  ? "bg-slate-800 text-slate-200 text-left"
+                  : "bg-teal-500 text-slate-950 text-right"
+              }`}
             >
               {msg.message}
             </div>
@@ -94,18 +92,20 @@ function Chat() {
       </div>
 
       {/* Right panel: conversation */}
-      <div className="w-3/4 flex flex-col border rounded p-2">
-        <h2 className="font-bold mb-2">
+      <div className="w-3/4 flex flex-col bg-slate-900 border border-slate-800 rounded-xl p-4">
+        <h2 className="font-bold text-teal-400 mb-3 text-lg">
           {selectedManager ? selectedManager.name : "Select a manager to chat"}
         </h2>
-        <div className="flex-1 overflow-y-auto mb-2 space-y-2">
+
+        <div className="flex-1 overflow-y-auto space-y-2 mb-3">
           {messages.map((msg) => (
             <div
               key={msg._id}
-              className={`p-2 rounded ${msg.sender._id === selectedManager?._id
-                ? "bg-gray-300 text-left"
-                : "bg-blue-500 text-white text-right"
-                }`}
+              className={`p-3 rounded-lg max-w-[75%] break-words ${
+                msg.sender._id === selectedManager?._id
+                  ? "bg-slate-800 text-slate-200 text-left"
+                  : "bg-lime-500 text-slate-950 text-right ml-auto"
+              }`}
             >
               {msg.message}
             </div>
@@ -118,12 +118,12 @@ function Chat() {
               type="text"
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
-              className="flex-1 border rounded p-2"
               placeholder="Type your message..."
+              className="flex-1 p-2 rounded-lg bg-slate-800 text-slate-200 border border-slate-700 focus:outline-none focus:border-teal-400 focus:ring-1 focus:ring-teal-400"
             />
             <button
               onClick={sendMessage}
-              className="bg-blue-500 text-white p-2 rounded"
+              className="px-4 py-2 rounded-lg bg-teal-500 hover:bg-teal-600 text-slate-950 font-semibold"
             >
               Send
             </button>

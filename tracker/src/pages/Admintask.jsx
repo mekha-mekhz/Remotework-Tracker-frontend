@@ -1,3 +1,4 @@
+// src/pages/TaskManager.jsx
 import React, { useEffect, useState } from "react";
 import api from "../components/api";
 
@@ -6,7 +7,7 @@ function TaskManager() {
   const headers = { Authorization: `Bearer ${token}` };
 
   const [tasks, setTasks] = useState([]);
-  const [history, setHistory] = useState([]); // ⭐ NEW table
+  const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [editTask, setEditTask] = useState(null);
 
@@ -37,7 +38,6 @@ function TaskManager() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // ----------------- Edit Button -----------------
   const handleEditClick = (task) => {
     setEditTask(task);
     setFormData({
@@ -48,7 +48,6 @@ function TaskManager() {
     });
   };
 
-  // ----------------- Update Task -----------------
   const handleUpdateTask = async (e) => {
     e.preventDefault();
     try {
@@ -56,12 +55,10 @@ function TaskManager() {
 
       const res = await api.put(`/tasks/${editTask._id}`, formData, { headers });
 
-      // Update task list
       setTasks((prev) =>
         prev.map((t) => (t._id === editTask._id ? res.data.task : t))
       );
 
-      // Add to history table
       setHistory((prev) => [
         ...prev,
         {
@@ -80,7 +77,6 @@ function TaskManager() {
     }
   };
 
-  // ----------------- Delete Task -----------------
   const handleDeleteTask = async (task) => {
     if (!window.confirm("Delete this task?")) return;
 
@@ -89,7 +85,6 @@ function TaskManager() {
 
       setTasks((prev) => prev.filter((t) => t._id !== task._id));
 
-      // Add deleted task to history
       setHistory((prev) => [
         ...prev,
         {
@@ -107,73 +102,74 @@ function TaskManager() {
     }
   };
 
-  // UI --------------------------------------------------
-  if (loading) return <p className="text-center mt-10">Loading tasks...</p>;
+  if (loading) return <p className="text-center mt-10 text-lime-300">Loading tasks...</p>;
 
   return (
-    <div className="p-6">
-      <h1 className="text-3xl font-bold mb-6">📋 Task Manager Dashboard</h1>
+    <div className="min-h-screen p-6 bg-gradient-to-br from-teal-900 via-teal-800 to-lime-900 text-white">
+      <h1 className="text-3xl font-bold mb-6 text-lime-300">📋 Task Manager Dashboard</h1>
 
       {/* ACTIVE TASKS TABLE */}
-      <h2 className="text-xl font-bold mb-3">Active Tasks</h2>
-      <table className="min-w-full bg-white border rounded mb-6">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border">Title</th>
-            <th className="px-4 py-2 border">Priority</th>
-            <th className="px-4 py-2 border">Assigned To</th>
-            <th className="px-4 py-2 border">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tasks.map((task) => (
-            <tr key={task._id}>
-              <td className="px-4 py-2 border">{task.title}</td>
-              <td className="px-4 py-2 border">{task.priority}</td>
-              <td className="px-4 py-2 border">{task.assignedTo?.name || "-"}</td>
-              <td className="px-4 py-2 border flex gap-2">
-                <button
-                  className="bg-yellow-500 px-2 py-1 text-white rounded"
-                  onClick={() => handleEditClick(task)}
-                >
-                  Edit
-                </button>
-                <button
-                  className="bg-red-600 px-2 py-1 text-white rounded"
-                  onClick={() => handleDeleteTask(task)}
-                >
-                  Delete
-                </button>
-              </td>
+      <h2 className="text-xl font-bold mb-3 text-lime-200">Active Tasks</h2>
+      <div className="overflow-x-auto mb-6">
+        <table className="min-w-full bg-teal-800 border rounded-lg border-lime-500 shadow-md">
+          <thead>
+            <tr className="bg-teal-700 text-lime-200">
+              <th className="px-4 py-2 border">Title</th>
+              <th className="px-4 py-2 border">Priority</th>
+              <th className="px-4 py-2 border">Assigned To</th>
+              <th className="px-4 py-2 border">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {tasks.map((task) => (
+              <tr key={task._id} className="odd:bg-teal-800 even:bg-teal-900">
+                <td className="px-4 py-2 border">{task.title}</td>
+                <td className="px-4 py-2 border">{task.priority}</td>
+                <td className="px-4 py-2 border">{task.assignedTo?.name || "-"}</td>
+                <td className="px-4 py-2 border flex gap-2">
+                  <button
+                    className="bg-lime-500 px-2 py-1 text-black rounded hover:bg-lime-600"
+                    onClick={() => handleEditClick(task)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="bg-red-600 px-2 py-1 text-white rounded hover:bg-red-700"
+                    onClick={() => handleDeleteTask(task)}
+                  >
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* EDIT FORM */}
       {editTask && (
-        <div className="bg-white p-6 rounded shadow-md max-w-md mb-10">
-          <h2 className="text-2xl font-semibold mb-4">Edit Task</h2>
+        <div className="bg-teal-800 p-6 rounded shadow-md max-w-md mb-10 border border-lime-400">
+          <h2 className="text-2xl font-semibold mb-4 text-lime-300">Edit Task</h2>
           <form onSubmit={handleUpdateTask} className="flex flex-col gap-4">
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="border px-3 py-2 rounded"
+              className="border px-3 py-2 rounded bg-teal-700 text-white"
               required
             />
             <textarea
               name="description"
               value={formData.description}
               onChange={handleChange}
-              className="border px-3 py-2 rounded"
+              className="border px-3 py-2 rounded bg-teal-700 text-white"
             />
             <select
               name="priority"
               value={formData.priority}
               onChange={handleChange}
-              className="border px-3 py-2 rounded"
+              className="border px-3 py-2 rounded bg-teal-700 text-white"
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -182,7 +178,7 @@ function TaskManager() {
 
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded"
+              className="bg-lime-500 text-black px-4 py-2 rounded hover:bg-lime-600"
             >
               Update Task
             </button>
@@ -191,26 +187,27 @@ function TaskManager() {
       )}
 
       {/* HISTORY TABLE */}
-      <h2 className="text-xl font-bold mb-3">🕒 Task History (Edited / Deleted)</h2>
-
-      <table className="min-w-full bg-gray-50 border rounded">
-        <thead>
-          <tr>
-            <th className="px-4 py-2 border">Action</th>
-            <th className="px-4 py-2 border">Task</th>
-            <th className="px-4 py-2 border">Timestamp</th>
-          </tr>
-        </thead>
-        <tbody>
-          {history.map((h) => (
-            <tr key={h.id}>
-              <td className="px-4 py-2 border">{h.action}</td>
-              <td className="px-4 py-2 border">{h.oldData.title}</td>
-              <td className="px-4 py-2 border">{h.time}</td>
+      <h2 className="text-xl font-bold mb-3 text-lime-200">🕒 Task History (Edited / Deleted)</h2>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-teal-800 border rounded-lg border-lime-500 shadow-md">
+          <thead>
+            <tr className="bg-teal-700 text-lime-200">
+              <th className="px-4 py-2 border">Action</th>
+              <th className="px-4 py-2 border">Task</th>
+              <th className="px-4 py-2 border">Timestamp</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {history.map((h) => (
+              <tr key={h.id} className="odd:bg-teal-800 even:bg-teal-900">
+                <td className="px-4 py-2 border">{h.action}</td>
+                <td className="px-4 py-2 border">{h.oldData.title}</td>
+                <td className="px-4 py-2 border">{h.time}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

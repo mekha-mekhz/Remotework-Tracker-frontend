@@ -40,18 +40,15 @@ function AdminRolePermissions() {
     fetchRoles();
   }, [token]);
 
-  // Select a role to edit
   const handleSelectRole = (role) => {
     setSelectedRole(role);
     setPermissions(role.permissions || {});
   };
 
-  // Handle permission checkbox change
   const handlePermissionChange = (e) => {
     setPermissions({ ...permissions, [e.target.name]: e.target.checked });
   };
 
-  // Update role permissions
   const handleUpdatePermissions = async () => {
     try {
       await api.put(
@@ -59,16 +56,12 @@ function AdminRolePermissions() {
         { permissions },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       alert("Permissions updated successfully");
-
-      // Update roles state locally
       setRoles((prev) =>
         prev.map((r) =>
           r._id === selectedRole._id ? { ...r, permissions } : r
         )
       );
-
       setSelectedRole(null);
     } catch (err) {
       console.error("Error updating permissions:", err);
@@ -76,10 +69,8 @@ function AdminRolePermissions() {
     }
   };
 
-  // Handle new role form change
   const handleNewRoleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     if (type === "checkbox") {
       setNewRole((prev) => ({
         ...prev,
@@ -90,7 +81,6 @@ function AdminRolePermissions() {
     }
   };
 
-  // Create new role
   const handleCreateRole = async (e) => {
     e.preventDefault();
     try {
@@ -99,7 +89,6 @@ function AdminRolePermissions() {
         newRole,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
       alert("Role created successfully");
       setRoles((prev) => [...prev, res.data.role]);
       setNewRole({ name: "", description: "", permissions: { ...permissions } });
@@ -109,31 +98,30 @@ function AdminRolePermissions() {
     }
   };
 
-  if (loading) return <p className="p-6">Loading roles...</p>;
+  if (loading) return <p className="text-lime-300 p-6 text-center">Loading roles...</p>;
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <h1 className="text-3xl font-bold mb-6">Role & Permissions Management</h1>
+    <div className="p-6 min-h-screen bg-gradient-to-br from-teal-900 via-teal-800 to-lime-900 text-white">
+      <h1 className="text-3xl font-bold mb-6 text-lime-300">Role & Permissions Management</h1>
 
+      {/* Role Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         {roles.map((role) => (
           <div
             key={role._id}
-            className="bg-white p-6 rounded-xl shadow hover:shadow-lg cursor-pointer transition"
+            className="bg-teal-800 p-6 rounded-xl shadow-lg hover:shadow-2xl cursor-pointer transition"
             onClick={() => handleSelectRole(role)}
           >
-            <h2 className="text-xl font-semibold">{role.name}</h2>
-            <p className="text-gray-500 mt-2">
-              {role.description || "No description"}
-            </p>
+            <h2 className="text-xl font-semibold text-lime-200">{role.name}</h2>
+            <p className="text-lime-300 mt-2">{role.description || "No description"}</p>
           </div>
         ))}
       </div>
 
       {/* Edit Permissions */}
       {selectedRole && (
-        <div className="bg-white p-6 rounded-xl shadow max-w-md mb-6">
-          <h2 className="text-2xl font-bold mb-4">
+        <div className="bg-teal-800 p-6 rounded-xl shadow-lg max-w-md mb-6">
+          <h2 className="text-2xl font-bold mb-4 text-lime-200">
             Edit Permissions: {selectedRole.name}
           </h2>
 
@@ -144,24 +132,22 @@ function AdminRolePermissions() {
                 name={key}
                 checked={permissions[key]}
                 onChange={handlePermissionChange}
-                className="w-5 h-5"
+                className="w-5 h-5 accent-lime-400"
               />
-              <label className="capitalize">
-                {key.replace(/([A-Z])/g, " $1")}
-              </label>
+              <label className="capitalize">{key.replace(/([A-Z])/g, " $1")}</label>
             </div>
           ))}
 
           <div className="flex gap-4 mt-4">
             <button
               onClick={handleUpdatePermissions}
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              className="px-4 py-2 bg-lime-500 text-black rounded hover:bg-lime-600 transition font-semibold"
             >
               Save
             </button>
             <button
               onClick={() => setSelectedRole(null)}
-              className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 transition"
+              className="px-4 py-2 bg-gray-700 text-white rounded hover:bg-gray-600 transition"
             >
               Cancel
             </button>
@@ -170,9 +156,8 @@ function AdminRolePermissions() {
       )}
 
       {/* Create New Role */}
-      <div className="bg-white p-6 rounded-xl shadow max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Create New Role</h2>
-
+      <div className="bg-teal-800 p-6 rounded-xl shadow-lg max-w-md">
+        <h2 className="text-2xl font-bold mb-4 text-lime-200">Create New Role</h2>
         <form onSubmit={handleCreateRole}>
           <input
             type="text"
@@ -181,17 +166,17 @@ function AdminRolePermissions() {
             value={newRole.name}
             onChange={handleNewRoleChange}
             required
-            className="w-full p-2 mb-3 border rounded"
+            className="w-full p-2 mb-3 rounded border border-lime-400 text-black"
           />
           <textarea
             name="description"
             placeholder="Role Description"
             value={newRole.description}
             onChange={handleNewRoleChange}
-            className="w-full p-2 mb-3 border rounded"
+            className="w-full p-2 mb-3 rounded border border-lime-400 text-black"
           />
 
-          <p className="font-semibold mb-2">Permissions:</p>
+          <p className="font-semibold mb-2 text-lime-200">Permissions:</p>
           {Object.keys(newRole.permissions).map((key) => (
             <div key={key} className="flex items-center gap-3 mb-2">
               <input
@@ -199,7 +184,7 @@ function AdminRolePermissions() {
                 name={key}
                 checked={newRole.permissions[key]}
                 onChange={handleNewRoleChange}
-                className="w-5 h-5"
+                className="w-5 h-5 accent-lime-400"
               />
               <label className="capitalize">{key.replace(/([A-Z])/g, " $1")}</label>
             </div>
@@ -207,7 +192,7 @@ function AdminRolePermissions() {
 
           <button
             type="submit"
-            className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition mt-4"
+            className="px-4 py-2 bg-lime-500 text-black rounded hover:bg-lime-600 transition mt-4 font-semibold"
           >
             Create Role
           </button>

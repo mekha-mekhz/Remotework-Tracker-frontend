@@ -3,71 +3,90 @@ import React, { useEffect, useState } from "react";
 import api from "../components/api";
 import { useAuth } from "../context/Authcontext";
 import { useNavigate } from "react-router-dom";
+
 function PaymentSuccess() {
+  const { user } = useAuth();
+  const token = localStorage.getItem("token");
+  const [upgraded, setUpgraded] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
-    const { user } = useAuth();
-    const token = localStorage.getItem("token");
-    const [upgraded, setUpgraded] = useState(false);
-    const [loading, setLoading] = useState(true);
-    const navigate = useNavigate();
+  const goToDashboard = () => {
+    navigate("/premiumdashboard");
+  };
 
-    const goToDashboard = () => {
-        navigate("/premiumdashboard"); // Route to your premium dashboard page
+  useEffect(() => {
+    const upgradeUser = async () => {
+      try {
+        await api.post(
+          "/upgrade",
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setUpgraded(true);
+      } catch (err) {
+        console.error("Upgrade error:", err);
+        setUpgraded(false);
+      } finally {
+        setLoading(false);
+      }
     };
 
-    useEffect(() => {
-        const upgradeUser = async () => {
-            try {
-                const res = await api.post(
-                    "/upgrade",
-                    {},
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-                setUpgraded(true);
-            } catch (err) {
-                console.error("Upgrade error:", err);
-                setUpgraded(false);
-            } finally {
-                setLoading(false);
-            }
-        };
+    upgradeUser();
+  }, [token]);
 
-        upgradeUser();
-    }, [token]);
+  if (loading)
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-900 via-teal-800 to-lime-900 text-white">
+        <p className="text-lg animate-pulse">Processing your payment...</p>
+      </div>
+    );
 
-    if (loading) return <p className="p-6">Processing your payment...</p>;
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-900 via-teal-800 to-lime-900 p-6">
+      <div className="bg-teal-800 text-white rounded-2xl shadow-xl p-8 max-w-lg w-full text-center">
+        {upgraded ? (
+          <>
+            <h1 className="text-3xl font-bold mb-4 text-lime-300">
+              Payment Successful 🎉
+            </h1>
+            <p className="mb-2">
+              Welcome <span className="font-semibold">{user?.name}</span>, your
+              account is now upgraded to <span className="text-lime-300">Premium</span>.
+            </p>
+            <p className="text-teal-200 mb-6">
+              You can now access Daily Logs, Productivity Reports, Attendance
+              History, and more.
+            </p>
 
-   return (
-  <div className="p-6">
-    {upgraded ? (
-      <>
-        <h1 className="text-3xl font-bold mb-4">Payment Successful!</h1>
-        <p>Welcome {user?.name}, your account is now upgraded to Premium.</p>
-        <p>You can now access premium features like Daily Logs, Productivity Reports, and Attendance History.</p>
+            <button
+              onClick={goToDashboard}
+              className="w-full px-6 py-3 bg-lime-500 text-black font-semibold rounded-lg hover:bg-lime-600 transition"
+            >
+              Go to Premium Dashboard
+            </button>
+          </>
+        ) : (
+          <>
+            <h1 className="text-3xl font-bold mb-4 text-red-400">
+              Upgrade Failed ❌
+            </h1>
+            <p className="text-teal-200 mb-6">
+              Your payment may have succeeded, but the upgrade did not complete.
+              Please contact support.
+            </p>
 
-        <button
-          onClick={goToDashboard}
-          className="bg-green-600 text-white mt-6 px-6 py-3 rounded hover:bg-green-700 transition"
-        >
-          Go to Premium Dashboard
-        </button>
-      </>
-    ) : (
-      <>
-        <h1 className="text-3xl font-bold mb-4 text-red-600">Upgrade Failed</h1>
-        <p>Please contact support if your payment was successful but your account is not upgraded.</p>
-
-        <button
-          onClick={goToDashboard}
-          className="bg-blue-600 text-white px-6 py-3 rounded hover:bg-blue-700 transition"
-        >
-          Go to Dashboard
-        </button>
-      </>
-    )}
-  </div>
-);
-
+            <button
+              onClick={goToDashboard}
+              className="w-full px-6 py-3 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition"
+            >
+              Go to Dashboard
+            </button>
+          </>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default PaymentSuccess;

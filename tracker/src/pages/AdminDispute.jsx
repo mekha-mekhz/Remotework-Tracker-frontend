@@ -1,3 +1,4 @@
+// src/pages/AdminDisputes.jsx
 import React, { useEffect, useState } from "react";
 import api from "../components/api";
 import { useAuth } from "../context/Authcontext";
@@ -15,11 +16,9 @@ function AdminDisputes() {
   const fetchDisputes = async () => {
     try {
       setLoading(true);
-
       const res = await api.get("/disputes", {
         headers: { Authorization: `Bearer ${token}` }
       });
-
       setDisputes(res.data.disputes || []);
     } catch (err) {
       console.error("Failed to fetch disputes", err);
@@ -38,7 +37,6 @@ function AdminDisputes() {
       await api.delete(`/disputes/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-
       alert("Dispute deleted successfully");
       fetchDisputes();
     } catch (err) {
@@ -51,16 +49,16 @@ function AdminDisputes() {
     fetchDisputes();
   }, []);
 
-  if (loading) return <p className="p-6 text-center">Loading disputes...</p>;
+  if (loading) return <p className="text-lime-300 p-6 text-center">Loading disputes...</p>;
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <h1 className="text-3xl font-bold mb-6">Manage Disputes</h1>
+    <div className="p-6 min-h-screen bg-gradient-to-br from-teal-900 via-teal-800 to-lime-900 text-white">
+      <h1 className="text-3xl font-bold mb-6 text-lime-300">Manage Disputes</h1>
 
       {/* Disputes Table */}
       <div className="overflow-x-auto">
-        <table className="w-full bg-white shadow rounded-lg overflow-hidden">
-          <thead className="bg-gray-200">
+        <table className="w-full bg-teal-800 shadow-lg rounded-lg overflow-hidden">
+          <thead className="bg-teal-700 text-lime-200">
             <tr>
               <th className="p-3 text-left">Title</th>
               <th className="p-3 text-left">Reported By</th>
@@ -74,14 +72,17 @@ function AdminDisputes() {
           <tbody>
             {disputes.length === 0 && (
               <tr>
-                <td colSpan="6" className="p-4 text-center text-gray-500">
+                <td colSpan="6" className="p-4 text-center text-lime-200">
                   No disputes found
                 </td>
               </tr>
             )}
 
             {disputes.map((d) => (
-              <tr key={d._id} className="border-b hover:bg-gray-100 transition">
+              <tr
+                key={d._id}
+                className="border-b border-teal-600 hover:bg-teal-700 transition"
+              >
                 <td className="p-3 font-medium">{d.title}</td>
 
                 <td className="p-3">
@@ -102,10 +103,10 @@ function AdminDisputes() {
                   <span
                     className={`px-2 py-1 rounded text-white ${
                       d.status === "open"
-                        ? "bg-red-500"
+                        ? "bg-red-600"
                         : d.status === "in_progress"
-                        ? "bg-yellow-500"
-                        : "bg-green-600"
+                        ? "bg-yellow-500 text-black"
+                        : "bg-lime-500 text-black"
                     }`}
                   >
                     {d.status.replace("_", " ")}
@@ -118,7 +119,7 @@ function AdminDisputes() {
                     onClick={() =>
                       (window.location.href = `/admin/disputes/edit/${d._id}`)
                     }
-                    className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    className="px-3 py-1 bg-lime-500 text-black rounded hover:bg-lime-600 transition font-semibold"
                   >
                     Edit
                   </button>
@@ -126,7 +127,7 @@ function AdminDisputes() {
                   {/* Delete */}
                   <button
                     onClick={() => deleteDispute(d._id)}
-                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                    className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition font-semibold"
                   >
                     Delete
                   </button>

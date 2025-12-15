@@ -1,3 +1,4 @@
+// src/pages/CreateDispute.jsx
 import React, { useState } from "react";
 import api from "../components/api";
 import { useAuth } from "../context/Authcontext";
@@ -8,15 +9,20 @@ function CreateDispute() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
-  const [form, setForm] = useState({ title: "", description: "", priority: "medium" });
+  const [form, setForm] = useState({
+    title: "",
+    description: "",
+    priority: "medium",
+  });
 
-  const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await api.post("/disputes/create", form, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
 
       alert("Dispute reported successfully");
@@ -28,42 +34,53 @@ function CreateDispute() {
   };
 
   return (
-    <form className="p-6 bg-white rounded shadow max-w-md mx-auto" onSubmit={handleSubmit}>
-      <h2 className="text-2xl font-bold mb-4">Report a Dispute</h2>
-
-      <input
-        name="title"
-        placeholder="Dispute Title"
-        value={form.title}
-        onChange={handleChange}
-        required
-        className="w-full p-2 mb-3 border rounded"
-      />
-
-      <textarea
-        name="description"
-        placeholder="Description"
-        value={form.description}
-        onChange={handleChange}
-        required
-        className="w-full p-2 mb-3 border rounded"
-      />
-
-      <select
-        name="priority"
-        value={form.priority}
-        onChange={handleChange}
-        className="w-full p-2 mb-3 border rounded"
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-teal-900 via-teal-800 to-lime-900 p-6">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-teal-800 text-white rounded-2xl shadow-xl p-6 w-full max-w-md"
       >
-        <option value="low">Low</option>
-        <option value="medium">Medium</option>
-        <option value="high">High</option>
-      </select>
+        <h2 className="text-3xl font-bold mb-6 text-lime-300 text-center">
+          Report a Dispute
+        </h2>
 
-      <button className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition">
-        Submit Dispute
-      </button>
-    </form>
+        <input
+          name="title"
+          placeholder="Dispute Title"
+          value={form.title}
+          onChange={handleChange}
+          required
+          className="w-full p-3 mb-4 rounded bg-teal-900 border border-teal-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-400"
+        />
+
+        <textarea
+          name="description"
+          placeholder="Description"
+          value={form.description}
+          onChange={handleChange}
+          required
+          rows="4"
+          className="w-full p-3 mb-4 rounded bg-teal-900 border border-teal-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-lime-400"
+        />
+
+        <select
+          name="priority"
+          value={form.priority}
+          onChange={handleChange}
+          className="w-full p-3 mb-6 rounded bg-teal-900 border border-teal-700 focus:outline-none focus:ring-2 focus:ring-lime-400"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+
+        <button
+          type="submit"
+          className="w-full px-4 py-3 bg-lime-500 text-black font-semibold rounded-lg hover:bg-lime-600 transition"
+        >
+          Submit Dispute
+        </button>
+      </form>
+    </div>
   );
 }
 

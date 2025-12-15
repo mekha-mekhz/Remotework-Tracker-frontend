@@ -12,13 +12,11 @@ function ApplyLeave() {
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState("");
 
-  // Get today in YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Auto-reset endDate if it's before startDate
     if (name === "startDate" && form.endDate && value > form.endDate) {
       setForm({ ...form, startDate: value, endDate: "" });
     } else {
@@ -29,13 +27,11 @@ function ApplyLeave() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validations
     if (!form.leaveType || !form.startDate || !form.endDate || !form.reason) {
       setMsg("⚠️ All fields are required.");
       return;
     }
 
-    // Date validation
     if (form.startDate < today) {
       setMsg("⚠️ Start date cannot be a past date.");
       return;
@@ -50,7 +46,7 @@ function ApplyLeave() {
     setMsg("");
 
     try {
-      const res = await api.post("/leave/apply", form);
+      await api.post("/leave/apply", form);
       setMsg("✅ Leave applied successfully!");
 
       setForm({
@@ -67,76 +63,109 @@ function ApplyLeave() {
   };
 
   return (
-    <div className="p-6 max-w-lg mx-auto bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-4 text-center">Apply Leave</h2>
+    <div className="min-h-screen flex items-center justify-center bg-slate-950 px-4">
+      <div className="w-full max-w-lg bg-slate-900 border border-slate-800 rounded-xl shadow-xl p-6">
 
-      {msg && (
-        <div className="mb-3 p-2 text-center rounded bg-blue-100 text-blue-700">
-          {msg}
-        </div>
-      )}
+        <h2 className="text-2xl font-bold text-center mb-6 text-teal-400">
+          Apply Leave
+        </h2>
 
-      <form onSubmit={handleSubmit}>
+        {msg && (
+          <div className="mb-4 p-2 text-center rounded
+            bg-slate-800 text-lime-400 border border-lime-500/30">
+            {msg}
+          </div>
+        )}
 
-        {/* Leave Type */}
-        <label className="block font-semibold mb-1">Leave Type</label>
-        <select
-          name="leaveType"
-          value={form.leaveType}
-          onChange={handleChange}
-          className="border p-2 w-full rounded mb-4"
-          required
-        >
-          <option value="">Select Leave Type</option>
-          <option value="sick">Sick Leave</option>
-          <option value="casual">Casual Leave</option>
-          <option value="annual">Annual Leave</option>
-          <option value="emergency">Emergency Leave</option>
-        </select>
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-        {/* Start Date */}
-        <label className="block font-semibold mb-1">Start Date</label>
-        <input
-          type="date"
-          name="startDate"
-          value={form.startDate}
-          onChange={handleChange}
-          min={today}          // ❗ cannot choose past date
-          className="border p-2 w-full rounded mb-4"
-          required
-        />
+          {/* Leave Type */}
+          <div>
+            <label className="block mb-1 text-slate-300 font-medium">
+              Leave Type
+            </label>
+            <select
+              name="leaveType"
+              value={form.leaveType}
+              onChange={handleChange}
+              className="w-full p-2 rounded bg-slate-800 text-slate-200
+                border border-slate-700 focus:outline-none
+                focus:border-teal-400 focus:ring-1 focus:ring-teal-400"
+              required
+            >
+              <option value="">Select Leave Type</option>
+              <option value="sick">Sick Leave</option>
+              <option value="casual">Casual Leave</option>
+              <option value="annual">Annual Leave</option>
+              <option value="emergency">Emergency Leave</option>
+            </select>
+          </div>
 
-        {/* End Date */}
-        <label className="block font-semibold mb-1">End Date</label>
-        <input
-          type="date"
-          name="endDate"
-          value={form.endDate}
-          onChange={handleChange}
-          min={form.startDate || today}   // ❗ cannot choose before start date
-          className="border p-2 w-full rounded mb-4"
-          required
-        />
+          {/* Start Date */}
+          <div>
+            <label className="block mb-1 text-slate-300 font-medium">
+              Start Date
+            </label>
+            <input
+              type="date"
+              name="startDate"
+              value={form.startDate}
+              onChange={handleChange}
+              min={today}
+              className="w-full p-2 rounded bg-slate-800 text-slate-200
+                border border-slate-700 focus:outline-none
+                focus:border-teal-400 focus:ring-1 focus:ring-teal-400"
+              required
+            />
+          </div>
 
-        {/* Reason */}
-        <label className="block font-semibold mb-1">Reason</label>
-        <textarea
-          name="reason"
-          value={form.reason}
-          onChange={handleChange}
-          placeholder="Enter reason for leave"
-          className="border p-2 w-full rounded mb-4 h-24"
-          required
-        />
+          {/* End Date */}
+          <div>
+            <label className="block mb-1 text-slate-300 font-medium">
+              End Date
+            </label>
+            <input
+              type="date"
+              name="endDate"
+              value={form.endDate}
+              onChange={handleChange}
+              min={form.startDate || today}
+              className="w-full p-2 rounded bg-slate-800 text-slate-200
+                border border-slate-700 focus:outline-none
+                focus:border-teal-400 focus:ring-1 focus:ring-teal-400"
+              required
+            />
+          </div>
 
-        {/* Submit Button */}
-        <button
-          disabled={loading}
-          className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 w-full rounded"
-        >
-          {loading ? "Applying..." : "Apply Leave"}
-        </button>
-      </form>
+          {/* Reason */}
+          <div>
+            <label className="block mb-1 text-slate-300 font-medium">
+              Reason
+            </label>
+            <textarea
+              name="reason"
+              value={form.reason}
+              onChange={handleChange}
+              placeholder="Enter reason for leave"
+              className="w-full h-24 p-2 rounded bg-slate-800 text-slate-200
+                border border-slate-700 focus:outline-none
+                focus:border-teal-400 focus:ring-1 focus:ring-teal-400"
+              required
+            />
+          </div>
+
+          {/* Submit */}
+          <button
+            disabled={loading}
+            className="w-full py-2 rounded-lg font-semibold
+              bg-gradient-to-r from-teal-500 to-lime-500
+              hover:from-teal-600 hover:to-lime-600
+              text-slate-950 transition disabled:opacity-60"
+          >
+            {loading ? "Applying..." : "Apply Leave"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
