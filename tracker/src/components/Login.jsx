@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "./api";
 import { useAuth } from "../context/Authcontext";
+import { Link } from "react-router-dom";
+
 
 function Login() {
   const navigate = useNavigate();
@@ -99,18 +101,17 @@ function Login() {
           {loading ? "Processing..." : "Login"}
         </button>
 <p className="text-right mb-4">
-  <a
-    href="/forgot-password"
+  <Link to ="/forgot-password"
     className="text-teal-300 hover:underline text-sm"
   >
     Forgot Password?
-  </a>
+  </Link>
 </p>
         <p className="text-center mt-4 text-gray-300 text-sm">
           Don’t have an account?{" "}
-          <a href="/register" className="text-teal-300 hover:underline">
+        <Link to="/register" className="text-teal-300 hover:underline">
             Register
-          </a>
+          </Link>
         </p>
       </form>
     </div>
