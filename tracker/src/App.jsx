@@ -44,14 +44,8 @@ function App() {
     <Router>
       <Routes>
         {/* Stripe success/cancel routes should be top-level */}
-        <Route
-          path="/paymentsuccess"
-          element={
-            <PrivateRoute roles={["user"]}>
-              <Success />
-            </PrivateRoute>
-          }
-        />
+      <Route path="/paymentsuccess" element={<Success />} />
+
         <Route
           path="/pricing"
           element={
