@@ -112,7 +112,7 @@ function App() {
             }
           />
           <Route
-            path="/paymentsuccess"
+            path="paymentsuccess"
             element={
               <PrivateRoute roles={["user"]}>
                 < Success />
