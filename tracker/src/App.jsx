@@ -15,7 +15,7 @@ import ProductivityReport from "./pages/ProductivityReport";
 import ApplyLeave from "./pages/ApplyLeave";
 import PremiumFeatures from "./pages/Premiumfeatures";
 import Pricing from "./pages/Pricing";
-import PaymentSuccess from "./pages/PaymentSuccess";
+
 import AdminUsers from "./pages/Adminuser";
 import AdminTasks from "./pages/Admintask";
 import Attendance from "./pages/Attendance";
@@ -38,6 +38,7 @@ import TeamsPage from "./pages/TeamsPage";
 import Chat from "./pages/Chats";
 import ManagerChat from "./pages/Mangerchat";
 import EditProfile from "./pages/EditProfile";
+import Success from "./pages/Success";
 
 
 
@@ -111,10 +112,10 @@ function App() {
             }
           />
           <Route
-            path="success"
+            path="paymentsuccess"
             element={
               <PrivateRoute roles={["user"]}>
-                <PaymentSuccess />
+                < Success/>
               </PrivateRoute>
             }
           />
