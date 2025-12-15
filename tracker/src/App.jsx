@@ -35,7 +35,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ProjectsPage from "./pages/ProjectsPage";
 import TeamsPage from "./pages/TeamsPage";
-import Chat from "./pages/chat";
+import Chat from "./pages/Chats";
 import ManagerChat from "./pages/Mangerchat";
 import EditProfile from "./pages/EditProfile";
 
@@ -61,7 +61,7 @@ function App() {
               </PrivateRoute>
             }
           />
-         
+
           <Route
             path="dailylog"
             element={
@@ -139,42 +139,42 @@ function App() {
             }
           />
           <Route path="admin/users" element={<AdminUsers />} />
-                    <Route path="admin/tasks" element={<AdminTasks />} />
-                    <Route path="leave" element={<ApplyLeave/>}/>
-                    <Route path="attendance" element={<Attendance/>} />
-                    <Route path="time" element={<TimeTracker/>}/>
-                    <Route path="pricing" element={<Pricing/>}/>
-                    <Route path="profile" element={<Profile/>}/>
-                    <Route path="manager/tasks" element={<ManagerTaskList/>}/>
-                   <Route path="manager/add-task" element={<ManagerAddTask/>}/>
-                   <Route path="manager/leaves" element={<ManagerLeaves/>}/>
-                   <Route path="/manager/teams" element={<TeamsPage/>}/>
-                   <Route path="manager/projects" element={<ProjectsPage/>}/>
-                               <Route path="manager/records" element={<ManagerRecords/>}/>
-                    <Route path="manager/chat" element={<ManagerChat/>}/>
-       
-<Route path="admin/reports" element={<AdminReports/>}/>
-<Route path="admin/approval" element={<Approval/>}/>
-<Route path="edit-profile" element={<EditProfile/>}/>
+          <Route path="admin/tasks" element={<AdminTasks />} />
+          <Route path="leave" element={<ApplyLeave />} />
+          <Route path="attendance" element={<Attendance />} />
+          <Route path="time" element={<TimeTracker />} />
+          <Route path="pricing" element={<Pricing />} />
+          <Route path="profile" element={<Profile />} />
+          <Route path="manager/tasks" element={<ManagerTaskList />} />
+          <Route path="manager/add-task" element={<ManagerAddTask />} />
+          <Route path="manager/leaves" element={<ManagerLeaves />} />
+          <Route path="/manager/teams" element={<TeamsPage />} />
+          <Route path="manager/projects" element={<ProjectsPage />} />
+          <Route path="manager/records" element={<ManagerRecords />} />
+          <Route path="manager/chat" element={<ManagerChat />} />
 
-<Route path="admin/roles" element={<AdminRolePermissions/>}/>
-<Route path="admin/disputes" element={<AdminDisputes/>}/>
-<Route path="disputes/create" element={<CreateDispute/>}/>
-<Route path="/forgot-password" element={<ForgotPassword />} />
-<Route path="/reset-password" element={<ResetPassword />} />
-<Route path="/chat" element={<Chat/>} />
+          <Route path="admin/reports" element={<AdminReports />} />
+          <Route path="admin/approval" element={<Approval />} />
+          <Route path="edit-profile" element={<EditProfile />} />
+
+          <Route path="admin/roles" element={<AdminRolePermissions />} />
+          <Route path="admin/disputes" element={<AdminDisputes />} />
+          <Route path="disputes/create" element={<CreateDispute />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/chat" element={<Chat />} />
 
 
 
-                  
-<Route
-  path="premiumdashboard"
-  element={
-    <PrivateRoute roles={["user"]}>
-      <PremiumDashboard />
-    </PrivateRoute>
-  }
-/>
+
+          <Route
+            path="premiumdashboard"
+            element={
+              <PrivateRoute roles={["user"]}>
+                <PremiumDashboard />
+              </PrivateRoute>
+            }
+          />
 
         </Route>
       </Routes>

@@ -5,7 +5,7 @@ import Productivity from "./Productivity";
 import Notification from "./Notification";
 import Attendance from "./Attendance";
 import ProductivityReport from "./ProductivityReport";
-import Chat from "./chat";
+import Chat from "./Chats";
 import CreateDispute from "./CreateDispute";
 
 function PremiumDashboard() {
@@ -19,7 +19,7 @@ function PremiumDashboard() {
     { key: "notification", label: "Notifications" },
     { key: "productivityreport", label: "Productivity Report" },
     { key: "chat", label: "Chat" },
-        { key: "createdispute", label: "Disputes" },
+    { key: "createdispute", label: "Disputes" },
 
   ];
 
@@ -54,10 +54,9 @@ function PremiumDashboard() {
               className={`
                 px-5 py-2 rounded-full font-semibold transition
                 backdrop-blur-md border border-white/20
-                ${
-                  isActive
-                    ? "bg-gradient-to-r from-lime-400 to-teal-400 text-black shadow-lg"
-                    : "bg-white/10 text-gray-200 hover:bg-white/20"
+                ${isActive
+                  ? "bg-gradient-to-r from-lime-400 to-teal-400 text-black shadow-lg"
+                  : "bg-white/10 text-gray-200 hover:bg-white/20"
                 }
               `}
             >
@@ -84,7 +83,7 @@ function PremiumDashboard() {
         {activeTab === "notification" && <Notification />}
         {activeTab === "productivityreport" && <ProductivityReport />}
         {activeTab === "chat" && <Chat />}
-                {activeTab === "createdispute" && <CreateDispute />}
+        {activeTab === "createdispute" && <CreateDispute />}
 
       </div>
     </div>
