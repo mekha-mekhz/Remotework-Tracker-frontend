@@ -3,46 +3,44 @@ import { useAuth } from "../context/Authcontext";
 
 function Pricing() {
   const { user, token } = useAuth();
+const handlePayment = async (planId) => {
+  if (!user) {
+    alert("Please login to purchase a plan");
+    return;
+  }
 
-  const handlePayment = async (planId) => {
-    if (!user) {
-      alert("Please login to purchase a plan");
-      return;
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/pay/create-checkout-session`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ planId }),
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Backend response:", text);
+      throw new Error("Checkout session failed");
     }
 
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/pay/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ planId }),
-        }
-      );
+    const data = await response.json();
 
-      if (!res.ok) {
-        const text = await res.text(); // prevent JSON crash
-        throw new Error(text || "Payment request failed");
-      }
-
-      const data = await res.json();
-
-      if (!data.url) {
-        alert("Payment session failed");
-        return;
-      }
-
-      // ✅ Stripe 2025 Redirect
-      window.location.href = data.url;
-
-    } catch (err) {
-      console.error("Payment Error:", err);
-      alert("Payment failed. Please try again.");
+    if (!data.url) {
+      throw new Error("Stripe URL missing");
     }
-  };
+
+    window.location.href = data.url;
+
+  } catch (err) {
+    console.error("Payment Error:", err);
+    alert("Payment failed. Check console.");
+  }
+};
 
   const plans = [
     {
