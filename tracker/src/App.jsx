@@ -15,7 +15,6 @@ import ProductivityReport from "./pages/ProductivityReport";
 import ApplyLeave from "./pages/ApplyLeave";
 import PremiumFeatures from "./pages/Premiumfeatures";
 import Pricing from "./pages/Pricing";
-
 import AdminUsers from "./pages/Adminuser";
 import AdminTasks from "./pages/Admintask";
 import Attendance from "./pages/Attendance";
@@ -40,18 +39,36 @@ import ManagerChat from "./pages/Mangerchat";
 import EditProfile from "./pages/EditProfile";
 import Success from "./pages/Success";
 
-
-
 function App() {
   return (
     <Router>
       <Routes>
-        {/* Layout Parent Route */}
+        {/* Stripe success/cancel routes should be top-level */}
+        <Route
+          path="/paymentsuccess"
+          element={
+            <PrivateRoute roles={["user"]}>
+              <Success />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/pricing"
+          element={
+            <PrivateRoute roles={["user"]}>
+              <Pricing />
+            </PrivateRoute>
+          }
+        />
+
+        {/* All other routes under Layout */}
         <Route path="/" element={<Layout />}>
           {/* Public Routes */}
           <Route index element={<Home />} />
           <Route path="login" element={<Login />} />
           <Route path="register" element={<Register />} />
+          <Route path="forgot-password" element={<ForgotPassword />} />
+          <Route path="reset-password" element={<ResetPassword />} />
 
           {/* Employee Routes */}
           <Route
@@ -62,7 +79,6 @@ function App() {
               </PrivateRoute>
             }
           />
-
           <Route
             path="dailylog"
             element={
@@ -112,15 +128,15 @@ function App() {
             }
           />
           <Route
-            path="paymentsuccess"
+            path="premiumdashboard"
             element={
               <PrivateRoute roles={["user"]}>
-                < Success />
+                <PremiumDashboard />
               </PrivateRoute>
             }
           />
 
-          {/* Manager Route */}
+          {/* Manager Routes */}
           <Route
             path="taskmanager"
             element={
@@ -129,8 +145,15 @@ function App() {
               </PrivateRoute>
             }
           />
+          <Route path="manager/tasks" element={<ManagerTaskList />} />
+          <Route path="manager/add-task" element={<ManagerAddTask />} />
+          <Route path="manager/leaves" element={<ManagerLeaves />} />
+          <Route path="manager/projects" element={<ProjectsPage />} />
+          <Route path="manager/teams" element={<TeamsPage />} />
+          <Route path="manager/records" element={<ManagerRecords />} />
+          <Route path="manager/chat" element={<ManagerChat />} />
 
-          {/* Admin Route */}
+          {/* Admin Routes */}
           <Route
             path="admin"
             element={
@@ -141,42 +164,19 @@ function App() {
           />
           <Route path="admin/users" element={<AdminUsers />} />
           <Route path="admin/tasks" element={<AdminTasks />} />
+          <Route path="admin/reports" element={<AdminReports />} />
+          <Route path="admin/roles" element={<AdminRolePermissions />} />
+          <Route path="admin/disputes" element={<AdminDisputes />} />
+          <Route path="admin/approval" element={<Approval />} />
+
+          {/* Other Routes */}
           <Route path="leave" element={<ApplyLeave />} />
           <Route path="attendance" element={<Attendance />} />
           <Route path="time" element={<TimeTracker />} />
-          <Route path="pricing" element={<Pricing />} />
           <Route path="profile" element={<Profile />} />
-          <Route path="manager/tasks" element={<ManagerTaskList />} />
-          <Route path="manager/add-task" element={<ManagerAddTask />} />
-          <Route path="manager/leaves" element={<ManagerLeaves />} />
-          <Route path="/manager/teams" element={<TeamsPage />} />
-          <Route path="manager/projects" element={<ProjectsPage />} />
-          <Route path="manager/records" element={<ManagerRecords />} />
-          <Route path="manager/chat" element={<ManagerChat />} />
-
-          <Route path="admin/reports" element={<AdminReports />} />
-          <Route path="admin/approval" element={<Approval />} />
           <Route path="edit-profile" element={<EditProfile />} />
-
-          <Route path="admin/roles" element={<AdminRolePermissions />} />
-          <Route path="admin/disputes" element={<AdminDisputes />} />
           <Route path="disputes/create" element={<CreateDispute />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route path="/chat" element={<Chat />} />
-
-
-
-
-          <Route
-            path="premiumdashboard"
-            element={
-              <PrivateRoute roles={["user"]}>
-                <PremiumDashboard />
-              </PrivateRoute>
-            }
-          />
-
+          <Route path="chat" element={<Chat />} />
         </Route>
       </Routes>
     </Router>
