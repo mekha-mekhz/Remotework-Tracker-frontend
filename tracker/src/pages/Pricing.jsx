@@ -4,7 +4,7 @@ import { useAuth } from "../context/Authcontext";
 
 // ✅ Load Stripe once
 const stripePromise = loadStripe(
-  import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+  import.meta.env.VITE_STRIPE_PUBLIC_KEY
 );
 
 function Pricing() {
