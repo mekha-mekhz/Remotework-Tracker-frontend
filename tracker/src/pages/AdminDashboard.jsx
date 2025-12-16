@@ -85,23 +85,7 @@ function AdminDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
-        {[
-          { label: "Total Users", value: stats.totalUsers, route: "/admin/users" },
-          { label: "Pending Approvals", value: stats.pendingApprovals, route: "/admin/users?pending=true" },
-          { label: "Active Tasks", value: stats.activeTasks, route: "/admin/tasks" },
-          { label: "Open Disputes", value: stats.openDisputes, route: "/admin/disputes" },
-        ].map((card, idx) => (
-          <div
-            key={idx}
-            className="bg-teal-800 p-6 rounded-xl shadow-lg hover:shadow-2xl transition cursor-pointer"
-            onClick={() => navigate(card.route)}
-          >
-            <p className="text-lime-200">{card.label}</p>
-            <p className="text-2xl font-bold text-white">{card.value}</p>
-          </div>
-        ))}
-      </div>
+     
 
       {/* Quick Action Buttons */}
       <div className="flex flex-wrap gap-6">
