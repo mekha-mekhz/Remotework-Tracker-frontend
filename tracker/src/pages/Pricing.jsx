@@ -1,5 +1,5 @@
 import React from "react";
-import { loadStripe } from "@stripe/stripe-js";
+
 import { useAuth } from "../context/Authcontext";
 
 // ✅ Load Stripe once
@@ -10,49 +10,47 @@ const stripePromise = loadStripe(
 function Pricing() {
   const { user, token } = useAuth();
 
+
   const handlePayment = async (planId) => {
-    if (!user) {
-      alert("Please login to purchase a plan");
-      return;
+  if (!user) {
+    alert("Please login to purchase a plan");
+    return;
+  }
+
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/pay/create-checkout-session`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ planId }),
+      }
+    );
+
+    if (!response.ok) {
+      const text = await response.text();
+      console.error("Backend response:", text);
+      throw new Error("Checkout session failed");
     }
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/pay/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ planId }),
-        }
-      );
+    const data = await response.json();
 
-      if (!response.ok) {
-        const text = await response.text();
-        console.error("Backend response:", text);
-        throw new Error("Checkout session failed");
-      }
-
-      const data = await response.json();
-
-      // ✅ Backend must return { id: session.id }
-      if (!data.id) {
-        throw new Error("Stripe session ID missing");
-      }
-
-      const stripe = await stripePromise;
-
-      await stripe.redirectToCheckout({
-        sessionId: data.id,
-      });
-
-    } catch (err) {
-      console.error("Payment Error:", err);
-      alert("Payment failed. Check console.");
+    if (!data.url) {
+      throw new Error("Stripe Checkout URL missing");
     }
-  };
+
+    // ✅ NEW STRIPE WAY
+    window.location.href = data.url;
+
+  } catch (err) {
+    console.error("Payment Error:", err);
+    alert("Payment failed. Check console.");
+  }
+};
+
 
   const plans = [
     {
