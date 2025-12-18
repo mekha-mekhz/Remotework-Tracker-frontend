@@ -3,7 +3,6 @@ import { useAuth } from "../context/Authcontext";
 
 function Pricing() {
   const { user, token } = useAuth();
-
   const handlePayment = async (planId) => {
     if (!user) {
       alert("Please login to purchase a plan");
@@ -11,17 +10,14 @@ function Pricing() {
     }
 
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/pay/create-checkout-session`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ planId }),
-        }
-      );
+      const response = await fetch(`http://localhost:8000/api/pay/create-checkout-session`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ planId }),
+      });
 
       if (!response.ok) {
         const text = await response.text();
@@ -30,14 +26,9 @@ function Pricing() {
       }
 
       const data = await response.json();
+      if (!data.url) throw new Error("Stripe Checkout URL missing");
 
-      if (!data.url) {
-        throw new Error("Stripe Checkout URL missing");
-      }
-
-      // ✅ Latest Stripe 2025: redirect via URL
       window.location.href = data.url;
-
     } catch (err) {
       console.error("Payment Error:", err);
       alert("Payment failed. Check console.");

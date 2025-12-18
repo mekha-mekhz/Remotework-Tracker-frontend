@@ -34,17 +34,20 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import ProjectsPage from "./pages/ProjectsPage";
 import TeamsPage from "./pages/TeamsPage";
-import Chat from "./pages/Chats";
+import AllReminders from "./pages/AllReminders";
 import ManagerChat from "./pages/Mangerchat";
 import EditProfile from "./pages/EditProfile";
 import Success from "./pages/Success";
-
+import Chats from "./pages/Chats";
+import CreateReminder from "./pages/CreateReminder";
+import UserStatusAdmin from "./pages/UserStatusAdmin"
+import AdminEditDispute from "./pages/AdminEditDispute";
 function App() {
   return (
     <Router>
       <Routes>
         {/* Stripe success/cancel routes should be top-level */}
-      <Route path="/paymentsuccess" element={<Success />} />
+        <Route path="/paymentsuccess" element={<Success />} />
 
         <Route
           path="/pricing"
@@ -162,6 +165,11 @@ function App() {
           <Route path="admin/roles" element={<AdminRolePermissions />} />
           <Route path="admin/disputes" element={<AdminDisputes />} />
           <Route path="admin/approval" element={<Approval />} />
+          <Route path="admin/user-status" element={<UserStatusAdmin />} />
+<Route
+  path="/admin/disputes/edit/:id"
+  element={<AdminEditDispute />}
+/>
 
           {/* Other Routes */}
           <Route path="leave" element={<ApplyLeave />} />
@@ -170,7 +178,11 @@ function App() {
           <Route path="profile" element={<Profile />} />
           <Route path="edit-profile" element={<EditProfile />} />
           <Route path="disputes/create" element={<CreateDispute />} />
-          <Route path="chat" element={<Chat />} />
+          <Route path="chat" element={<Chats />} />
+          <Route path="createreminder" element={<CreateReminder />} />
+          <Route path="/all-reminders" element={<AllReminders />} />
+
+
         </Route>
       </Routes>
     </Router>

@@ -30,7 +30,7 @@ function AdminReports() {
       try {
         setLoading(true);
 
-        const usersRes = await api.get("/admin/users", {
+        const usersRes = await api.get("/users", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const totalUsers = usersRes.data.length;
@@ -39,7 +39,7 @@ function AdminReports() {
         const activeTasks = tasksRes.data.tasks.filter(t => t.status !== "done").length;
         const completedTasks = tasksRes.data.tasks.filter(t => t.status === "done").length;
 
-        const disputesRes = await api.get("/admin/disputes/stats", {
+        const disputesRes = await api.get("/disputes/stats/all", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const pendingDisputes = disputesRes.data.openDisputes;

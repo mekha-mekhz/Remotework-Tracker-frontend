@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import api from "./api";
 import { useAuth } from "../context/Authcontext";
-import { Link } from "react-router-dom";
-
 
 function Login() {
   const navigate = useNavigate();
@@ -11,15 +9,38 @@ function Login() {
 
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({}); // ✅ State for frontend validation errors
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // ✅ Manual frontend validation
+  const validate = () => {
+    const tempErrors = {};
+
+    if (!formData.email) {
+      tempErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      tempErrors.email = "Invalid email format";
+    }
+
+    if (!formData.password) {
+      tempErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      tempErrors.password = "Password must be at least 6 characters";
+    }
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0; // ✅ Valid if no errors
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
 
+    if (!validate()) return; // ❌ Stop submission if validation fails
+
+    setLoading(true);
     try {
       console.log("📨 Sending login request:", formData);
 
@@ -31,21 +52,13 @@ function Login() {
 
       console.log("✅ Login Response:", res.data);
 
-      // Save token + user in context
-      login(res.data.user, res.data.token);
-
+      login(res.data.user, res.data.token); // Save token + user in context
       alert("Login Successful!");
 
       const role = res.data.user.role;
 
-      // Premium redirect
-      if (res.data.user.premium) {
-        navigate("/premiumdashboard");
-        return;
-      }
-
-      // Role-based redirects
-      if (role === "admin") navigate("/admin");
+      if (res.data.user.premium) navigate("/premiumdashboard");
+      else if (role === "admin") navigate("/admin");
       else if (role === "manager") navigate("/taskmanager");
       else navigate("/dashboard");
 
@@ -76,20 +89,24 @@ function Login() {
           name="email"
           placeholder="Email"
           onChange={handleChange}
-          required
-          className="w-full px-4 py-3 mb-4 bg-black/20 text-white rounded-lg 
+          className="w-full px-4 py-3 mb-1 bg-black/20 text-white rounded-lg 
           focus:ring-2 focus:ring-teal-300"
         />
+        {errors.email && (
+          <p className="text-red-500 text-sm mb-2">{errors.email}</p>
+        )}
 
         <input
           type="password"
           name="password"
           placeholder="Password"
           onChange={handleChange}
-          required
-          className="w-full px-4 py-3 mb-6 bg-black/20 text-white rounded-lg 
+          className="w-full px-4 py-3 mb-1 bg-black/20 text-white rounded-lg 
           focus:ring-2 focus:ring-teal-300"
         />
+        {errors.password && (
+          <p className="text-red-500 text-sm mb-2">{errors.password}</p>
+        )}
 
         <button
           type="submit"
@@ -100,16 +117,16 @@ function Login() {
         >
           {loading ? "Processing..." : "Login"}
         </button>
-<p className="text-right mb-4">
-  <Link to ="/forgot-password"
-    className="text-teal-300 hover:underline text-sm"
-  >
-    Forgot Password?
-  </Link>
-</p>
+
+        <p className="text-right mb-4">
+          <Link to="/forgot-password" className="text-teal-300 hover:underline text-sm">
+            Forgot Password?
+          </Link>
+        </p>
+
         <p className="text-center mt-4 text-gray-300 text-sm">
           Don’t have an account?{" "}
-        <Link to="/register" className="text-teal-300 hover:underline">
+          <Link to="/register" className="text-teal-300 hover:underline">
             Register
           </Link>
         </p>

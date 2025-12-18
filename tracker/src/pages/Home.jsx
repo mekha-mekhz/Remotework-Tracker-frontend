@@ -28,7 +28,7 @@ function HomePage() {
         >
           <h1 className="text-4xl md:text-5xl font-extrabold mb-4 leading-tight text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
             Boost Your Remote Productivity
-            <br /> Stay Motivated. Achieve More. 🚀
+            <br /> Stay Motivated. Achieve More. 
           </h1>
 
           <p className="text-white/90 mb-6 text-lg drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">

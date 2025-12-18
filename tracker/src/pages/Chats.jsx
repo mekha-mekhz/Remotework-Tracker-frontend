@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import api from "../components/api";
 import { useAuth } from "../context/Authcontext";
 
-function Chat() {
+function Chats() {
   const { user } = useAuth();
   const token = localStorage.getItem("token");
 
@@ -134,4 +134,4 @@ function Chat() {
   );
 }
 
-export default Chat;
+export default Chats;

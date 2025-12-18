@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import api from "./api";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 function Register() {
   const navigate = useNavigate();
@@ -15,9 +14,11 @@ function Register() {
     profilePhoto: null,
   });
 
+  const [errors, setErrors] = useState({}); // ✅ State for validation errors
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-
     if (name === "profilePhoto") {
       setFormData({ ...formData, profilePhoto: files[0] });
     } else {
@@ -25,9 +26,30 @@ function Register() {
     }
   };
 
+  // ✅ Manual frontend validation
+  const validate = () => {
+    const tempErrors = {};
+
+    if (!formData.name.trim()) tempErrors.name = "Name is required";
+
+    if (!formData.email) tempErrors.email = "Email is required";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      tempErrors.email = "Invalid email format";
+
+    if (!formData.password) tempErrors.password = "Password is required";
+    else if (formData.password.length < 6)
+      tempErrors.password = "Password must be at least 6 characters";
+
+    setErrors(tempErrors);
+    return Object.keys(tempErrors).length === 0;
+  };
+
   const submit = async (e) => {
     e.preventDefault();
 
+    if (!validate()) return; // ❌ Stop if validation fails
+
+    setLoading(true);
     try {
       const data = new FormData();
       Object.keys(formData).forEach((key) => data.append(key, formData[key]));
@@ -39,8 +61,10 @@ function Register() {
       alert("✅ Registered Successfully!");
       navigate("/login");
     } catch (err) {
-      alert("❌ Registration failed");
+      alert(err.response?.data?.message || "❌ Registration failed");
       console.error(err.response?.data || err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -64,10 +88,10 @@ function Register() {
           name="name"
           placeholder="Full Name"
           onChange={handleChange}
-          required
-          className="w-full px-4 py-3 mb-4 bg-black/20 text-white rounded-lg 
+          className="w-full px-4 py-3 mb-1 bg-black/20 text-white rounded-lg 
           focus:ring-2 focus:ring-teal-300 border border-white/20"
         />
+        {errors.name && <p className="text-red-500 text-sm mb-2">{errors.name}</p>}
 
         {/* Email */}
         <input
@@ -75,10 +99,10 @@ function Register() {
           name="email"
           placeholder="Email"
           onChange={handleChange}
-          required
-          className="w-full px-4 py-3 mb-4 bg-black/20 text-white rounded-lg 
+          className="w-full px-4 py-3 mb-1 bg-black/20 text-white rounded-lg 
           focus:ring-2 focus:ring-teal-300 border border-white/20"
         />
+        {errors.email && <p className="text-red-500 text-sm mb-2">{errors.email}</p>}
 
         {/* Password */}
         <input
@@ -86,10 +110,12 @@ function Register() {
           name="password"
           placeholder="Password"
           onChange={handleChange}
-          required
-          className="w-full px-4 py-3 mb-4 bg-black/20 text-white rounded-lg 
+          className="w-full px-4 py-3 mb-1 bg-black/20 text-white rounded-lg 
           focus:ring-2 focus:ring-teal-300 border border-white/20"
         />
+        {errors.password && (
+          <p className="text-red-500 text-sm mb-2">{errors.password}</p>
+        )}
 
         {/* Position */}
         <input
@@ -111,7 +137,6 @@ function Register() {
             onChange={handleChange}
             className="hidden"
           />
-
           <label
             htmlFor="profilePhoto"
             className="block w-full bg-black/20 border border-white/20 
@@ -119,7 +144,6 @@ function Register() {
           >
             Upload Profile Photo
           </label>
-
           {formData.profilePhoto && (
             <p className="text-xs text-lime-300 mt-1">
               Selected: {formData.profilePhoto.name}
@@ -142,11 +166,12 @@ function Register() {
         {/* Submit */}
         <button
           type="submit"
+          disabled={loading}
           className="w-full py-3 rounded-lg bg-gradient-to-r 
           from-lime-400 to-teal-400 text-black font-semibold shadow-lg 
-          hover:opacity-90 transition"
+          hover:opacity-90 transition disabled:opacity-50"
         >
-          Register
+          {loading ? "Processing..." : "Register"}
         </button>
 
         <p className="text-center mt-4 text-gray-300 text-sm">
