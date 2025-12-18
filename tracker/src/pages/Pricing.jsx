@@ -130,7 +130,7 @@ function Pricing() {
     try {
       const response = await api.post(
         "/pay/create-checkout-session",
-        { planId }, // ✅ axios sends body directly
+        { planId }, // ✅ DATA ONLY
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -138,15 +138,15 @@ function Pricing() {
         }
       );
 
-      // ✅ axios response data
       const { url } = response.data;
 
       if (!url) {
         throw new Error("Stripe Checkout URL missing");
       }
 
-      // ✅ Redirect to Stripe Checkout
+      // ✅ Redirect to Stripe
       window.location.href = url;
+
     } catch (err) {
       console.error("Payment Error:", err.response?.data || err.message);
       alert("Payment failed. Check console.");
